@@ -51,7 +51,7 @@ int main()
         }
     }
 
-    //verificar se est· em um estado de aceitaÁ„o
+    //verificar se est√° em um estado de aceita√ß√£o
 
     printf("\nEstado ATUAL: %d\nForam encontrados %d padroes.", estadoAtual, contPadrao);
 
