@@ -36,7 +36,6 @@ int main()
     int t = 0, p = 0;
     int tamTexto = strlen(texto);
     int tamPadrao = strlen(padrao);
-    int indice = -1;
 
     printf("tamanho texto: %d\ntamanho padrao: %d", tamTexto, tamPadrao);
 
