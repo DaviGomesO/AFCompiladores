@@ -2,22 +2,32 @@
 #include <stdlib.h>
 #include <string.h>
 
-char texto[] = "GTAGTACTAGT";
+char texto[] = "GTAGTACTAGTACTAGTACTGGATC";
 char padrao[] = "TACTA";
 
-void ler_padrao(int indice, int tamPadrao){
-    int aux = indice, p;
-    for(p = 0; p < tamPadrao; p++){
-        if(texto[aux] == padrao[p]){
-            aux++;
-        }else{
+void ler_padrao(int *indice, int tamPadrao)
+{
+    // LER O PADRÃO AO MESMO TEMPO QUE LER O TEXTO, SÓ QUE AGORA VERIFICANDO SE O TEXTO É IGUAL AO PADRÃO
+    int aux = *indice, p;
+    for (p = 0; p < tamPadrao; p++)
+    {
+        if (texto[(*indice)] == padrao[p])
+        {
+            (*indice)++;
+        }
+        else
+        {
             break;
         }
     }
 
-    if(aux == tamPadrao-1){
-        printf("Foi encontrado o padrao no indice %d", indice);
+    if (p == tamPadrao)
+    {
+        printf("\nFoi encontrado o padrao a partir do indice %d", aux);
     }
+
+    // POR TER SAIDO DE UM FOR, DECREMENTO UM NO INDICE, PARA NÃO PERDER A LEITURA DE ELEMENTO DO TEXTO
+    (*indice)--;
 }
 
 int main()
@@ -28,31 +38,16 @@ int main()
     int tamPadrao = strlen(padrao);
     int indice = -1;
 
-    printf(" tamanho texto: %d\n tamanho padrao: %d", tamTexto, tamPadrao);
+    printf("tamanho texto: %d\ntamanho padrao: %d", tamTexto, tamPadrao);
 
-    for(t; t < tamTexto; t++){
-        if(texto[t] == padrao[p]){
-            ler_padrao(t,tamPadrao);
+    for (t; t < tamTexto; t++)
+    {
+        // VERIFICA SE O ELEMENTO DO INDICE DA VEZ É IGUAL AO PRIMEIRO ELEMENTO DO PADRÃO
+        if (texto[t] == padrao[p])
+        {
+            ler_padrao(&t, tamPadrao);
         }
     }
 
     return 0;
 }
-
-/*
-
-if(p == tamPadrao-1){
-                indice = t - tamPadrao;
-                printf("\nPadrao encontrado no indice %d", indice);
-            }
-for(t; t < tamTexto - tamPadrao; t++)
-else{
-            if(p == tamPadrao-1){
-                indice = t-tamPadrao;
-                printf("Indice do padrao encontrado: %d",indice);
-            }else if(p != 0){
-                p = 0;
-                indice = -1;
-            }
-        }
-*/
