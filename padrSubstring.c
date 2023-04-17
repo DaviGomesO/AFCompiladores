@@ -4,6 +4,8 @@
 
 char texto[] = "GTAGTACTAGTACTAGTACTGGATC";
 char padrao[] = "TACTA";
+// char texto[] = "BABABBABBABABAB";
+// char padrao[] = "ABA";
 
 void ler_padrao(int *indice, int tamPadrao)
 {
@@ -30,14 +32,9 @@ void ler_padrao(int *indice, int tamPadrao)
     (*indice)--;
 }
 
-int main()
+void forca_bruta(int tamTexto, int tamPadrao)
 {
-
     int t = 0, p = 0;
-    int tamTexto = strlen(texto);
-    int tamPadrao = strlen(padrao);
-
-    printf("tamanho texto: %d\ntamanho padrao: %d", tamTexto, tamPadrao);
 
     for (t; t < tamTexto; t++)
     {
@@ -47,6 +44,66 @@ int main()
             ler_padrao(&t, tamPadrao);
         }
     }
+}
+
+// AFD
+// basicamente minha ideia foi considerar cada estado a leitura de um elemento do padrão
+int ler_cadeia(int estadoAtual, char elementoAtual, int tamPadrao)
+{
+    if (estadoAtual < tamPadrao)
+    {
+        if (elementoAtual == padrao[estadoAtual])
+        {
+            return estadoAtual + 1;
+        }
+        else if (estadoAtual == 1)
+        {
+            // se o elemento for o primeiro, se ele ler o mesmo caractere que saiu do estado zero para o estado um, ele fica em loop
+            if (elementoAtual == padrao[estadoAtual - 1])
+            {
+                return estadoAtual;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}
+
+int estado_inicial = 0;
+
+void automato(int tamTexto, int tamPadrao)
+{
+    int estado_atual = estado_inicial;
+    int i, qtd_padrao = 0;
+
+    for (i = 0; i < tamTexto; i++)
+    {
+        estado_atual = ler_cadeia(estado_atual, texto[i], tamPadrao);
+
+        // se o estado for do tamanho do padrão, significa que ele foi encontrado
+        if (estado_atual == tamPadrao)
+        {
+            qtd_padrao++;
+            estado_atual = 0;
+            i--;
+        }
+    }
+
+    printf("\nO padrao foi encontrado %d vez(es) no texto.", qtd_padrao);
+}
+
+int main()
+{
+
+    int tamTexto = strlen(texto);
+    int tamPadrao = strlen(padrao);
+
+    printf("tamanho texto: %d\ntamanho padrao: %d", tamTexto, tamPadrao);
+
+    // forca_bruta(tamTexto, tamPadrao);
+    automato(tamTexto, tamPadrao);
 
     return 0;
 }
