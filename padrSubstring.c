@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-char texto[] = "GTAGTACTAGTACTAGTACTGGATC";
-char padrao[] = "TACTA";
+// char texto[] = "GTAGTACTAGTACTAGTACTGGATC";
+// char padrao[] = "TACTA";
 // char texto[] = "BABABBABBABABAB";
 // char padrao[] = "ABA";
 
-void ler_padrao(int *indice, int tamPadrao)
+void ler_padrao(char *texto, char *padrao, int *indice, int tamPadrao)
 {
     // LER O PADRÃO AO MESMO TEMPO QUE LER O TEXTO, SÓ QUE AGORA VERIFICANDO SE O TEXTO É IGUAL AO PADRÃO
     int aux = *indice, p;
@@ -32,7 +32,7 @@ void ler_padrao(int *indice, int tamPadrao)
     (*indice)--;
 }
 
-void forca_bruta(int tamTexto, int tamPadrao)
+void forca_bruta(char *texto, char *padrao, int tamTexto, int tamPadrao)
 {
     int t = 0, p = 0;
 
@@ -41,14 +41,14 @@ void forca_bruta(int tamTexto, int tamPadrao)
         // VERIFICA SE O ELEMENTO DO INDICE DA VEZ É IGUAL AO PRIMEIRO ELEMENTO DO PADRÃO
         if (texto[t] == padrao[p])
         {
-            ler_padrao(&t, tamPadrao);
+            ler_padrao(texto, padrao, &t, tamPadrao);
         }
     }
 }
 
 // AFD
 // basicamente minha ideia foi considerar cada estado a leitura de um elemento do padrão
-int ler_cadeia(int estadoAtual, char elementoAtual, int tamPadrao)
+int ler_cadeia(char *padrao, int estadoAtual, char elementoAtual, int tamPadrao)
 {
     if (estadoAtual < tamPadrao)
     {
@@ -73,21 +73,23 @@ int ler_cadeia(int estadoAtual, char elementoAtual, int tamPadrao)
 
 int estado_inicial = 0;
 
-void automato(int tamTexto, int tamPadrao)
+void automato(char *texto, char *padrao, int tamTexto, int tamPadrao)
 {
     int estado_atual = estado_inicial;
     int i, qtd_padrao = 0;
 
     for (i = 0; i < tamTexto; i++)
     {
-        estado_atual = ler_cadeia(estado_atual, texto[i], tamPadrao);
+        estado_atual = ler_cadeia(padrao, estado_atual, texto[i], tamPadrao);
 
         // se o estado for do tamanho do padrão, significa que ele foi encontrado
         if (estado_atual == tamPadrao)
         {
             qtd_padrao++;
             estado_atual = 0;
-            i--;
+            // se o padrão for de tamanho um, ele não decrementa, pois não perde a leitura de elemento
+            if (tamPadrao > 1)
+                i--;
         }
     }
 
@@ -97,13 +99,23 @@ void automato(int tamTexto, int tamPadrao)
 int main()
 {
 
+    char *texto, *padrao;
+    texto = (char *)malloc(sizeof(char) * 256);
+    padrao = (char *)malloc(sizeof(char) * 10);
+
+    printf("Digite o texto: ");
+    scanf("%s", texto);
+
+    printf("Digite o padrao: ");
+    scanf("%s", padrao);
+
     int tamTexto = strlen(texto);
     int tamPadrao = strlen(padrao);
 
     printf("tamanho texto: %d\ntamanho padrao: %d", tamTexto, tamPadrao);
 
-    // forca_bruta(tamTexto, tamPadrao);
-    automato(tamTexto, tamPadrao);
+    // forca_bruta(texto, padrao, tamTexto, tamPadrao);
+    automato(texto, padrao, tamTexto, tamPadrao);
 
     return 0;
 }
