@@ -63,6 +63,10 @@ int ler_cadeia(char *padrao, int estadoAtual, char elementoAtual, int tamPadrao)
             {
                 return estadoAtual;
             }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
@@ -76,7 +80,7 @@ int estado_inicial = 0;
 void automato(char *texto, char *padrao, int tamTexto, int tamPadrao)
 {
     int estado_atual = estado_inicial;
-    int i, qtd_padrao = 0;
+    int i, qtd_padrao = 0, estado_passado = estado_atual;
 
     for (i = 0; i < tamTexto; i++)
     {
@@ -91,9 +95,63 @@ void automato(char *texto, char *padrao, int tamTexto, int tamPadrao)
             if (tamPadrao > 1)
                 i--;
         }
+
+        // se estiver em um estado avançado, e retornar ao estado zero, da uma chance para ler a partir do elemento seguinte ao que iniciou a ultima caminhada no automato
+        if (estado_atual == 0 && estado_passado != 0)
+            i--;
+        estado_passado = estado_atual;
     }
 
-    printf("\nO padrao foi encontrado %d vez(es) no texto.", qtd_padrao);
+    printf("\nO padrao foi encontrado %d vez(es) no texto.\n", qtd_padrao);
+}
+
+void gerarTabela(char *padrao, int tamPadrao)
+{
+    int i, j; // LINHA, COLUNA
+    int **tabela = (int **)malloc(tamPadrao * sizeof(int *));
+    for (i = 0; i < tamPadrao; i++)
+    {
+        tabela[i] = (int *)malloc(tamPadrao * sizeof(int));
+    }
+
+    // preencher matriz usando o ler cadeia, a ideia é verificar para onde cada estado leva ao ler cada caracter do padrão
+    for (i = 0; i < tamPadrao; i++)
+    {
+        for (j = 0; j < tamPadrao; j++)
+        {
+            tabela[i][j] = ler_cadeia(padrao, j, padrao[i], tamPadrao);
+        }
+    }
+
+    // imprime a tabela
+    printf("  |");
+    for (i = 0; i < tamPadrao; i++)
+        printf("%d ", i);
+
+    printf("\n");
+    for (i = 0; i < tamPadrao; i++)
+        printf("---", i);
+    printf("\n");
+
+    for (i = 0; i < tamPadrao; i++)
+    {
+        printf("%c |", padrao[i]);
+        for (j = 0; j < tamPadrao; j++)
+        {
+            if (tabela[i][j] < tamPadrao)
+                printf("%d ", tabela[i][j]);
+            else
+                printf("%d*", tabela[i][j]);
+        }
+        printf("\n");
+    }
+
+    // Libera a memória alocada para a matriz
+    for (i = 0; i < tamPadrao; i++)
+    {
+        free(tabela[i]);
+    }
+    free(tabela);
 }
 
 int main()
@@ -116,6 +174,8 @@ int main()
 
     // forca_bruta(texto, padrao, tamTexto, tamPadrao);
     automato(texto, padrao, tamTexto, tamPadrao);
+
+    gerarTabela(padrao, tamPadrao);
 
     return 0;
 }
