@@ -97,7 +97,8 @@ void automato(char *texto, char *padrao, int tamTexto, int tamPadrao)
         }
 
         // se estiver em um estado avançado, e retornar ao estado zero, da uma chance para ler a partir do elemento seguinte ao que iniciou a ultima caminhada no automato
-        if (estado_atual == 0 && estado_passado != 0)
+        // OBS. para quando o padrão for maior que 2, pois do estado 1 ele fica no loop ou vai para o estado final
+        if (tamPadrao > 2 && estado_atual == 0 && estado_passado != 0)
             i--;
         estado_passado = estado_atual;
     }
